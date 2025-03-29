@@ -1,14 +1,16 @@
+from flask import Flask, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 import re
+import os
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
+PORT = int(os.environ.get("PORT", 5000))
+
+app = Flask(__name__)
 
 banned_words = ["شرموط", "شرموطة", "قحبة", "زاملة", "زامل", "قحب", "نك", "نيك", "نيكمك", "نكمك", "زبي", "زب"]
-
-banned_links = [
-    "www", "إعلان", "porn", "xxx", "x", ".com", "hetai"
-]
+banned_links = ["www", "إعلان", "porn", "xxx", "x", ".com", "hetai"]
 
 custom_replies = {
     "مرحبا": "أهلًا وسهلًا بك! 😊",
@@ -18,7 +20,6 @@ custom_replies = {
 
 async def start(update: Update, context: CallbackContext):
     message = f"""مرحبًا {update.effective_user.first_name}!
-
 🔗 قنواتنا الرسمية:
 1️⃣ يوتيوب: [Popxev Games](https://youtube.com/@popxevgames-v)
 2️⃣ إنستجرام: [Popxev Games](https://www.instagram.com/popxev_games)
@@ -65,9 +66,11 @@ async def handle_messages(update: Update, context: CallbackContext):
     reply = custom_replies.get(text, "يمكنك استعمال /help لمعرفة أكثر")
     await update.message.reply_text(reply)
 
-async def webhook(request):
-    update = Update.de_json(request.json, application.bot)
-    await application.process_update(update)
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    update = Update.de_json(request.get_json(), application.bot)
+    application.create_task(application.process_update(update))
+    return "OK", 200
 
 def main():
     global application
@@ -79,8 +82,10 @@ def main():
     application.add_handler(CommandHandler("discord", discord))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages))
 
-    application.bot.set_webhook("https://telegram-popxev-bot.onrender.com/webhook")
+    application.bot.set_webhook(f"https://telegram-popxev-bot.onrender.com/webhook")
     print("✅ Webhook تم تعيينه بنجاح...")
+
+    app.run(host="0.0.0.0", port=PORT)
 
 if __name__ == "__main__":
     main()
