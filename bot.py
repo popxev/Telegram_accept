@@ -64,10 +64,13 @@ async def handle_messages(update: Update, context: CallbackContext):
 @app.route("/webhook", methods=["POST"])
 def webhook():
     try:
-        update = Update.de_json(request.get_json(), application.bot)
+        data = request.get_json()
+        print("📥 Received data:", data)  # طباعة البيانات المستلمة من تيليجرام
+        update = Update.de_json(data, application.bot)
         asyncio.run(application.process_update(update))
         return jsonify({"status": "ok"}), 200
     except Exception as e:
+        print("❌ Error in webhook:", str(e))  # طباعة الخطأ في السجل
         return jsonify({"error": str(e)}), 500
 
 def main():
