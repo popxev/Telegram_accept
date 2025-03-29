@@ -31,7 +31,7 @@ await update.message.reply_text(reply)
 
 @app.route("/webhook", methods=["POST"]) def webhook(): try: update = Update.de_json(request.get_json(), application.bot) asyncio.run(application.process_update(update)) return jsonify({"status": "ok"}), 200 except Exception as e: logging.error(f"خطأ في webhook: {str(e)}") return jsonify({"error": str(e)}), 500
 
-def main(): application.add_handler(CommandHandler("start", start)) application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages)) application.run_webhook( listen="0.0.0.0", port=int(os.environ.get("PORT", 5000)), webhook_url=WEBHOOK_URL )
+def main(): application.add_handler(CommandHandler("start", start)) application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages)) print("✅ Webhook تم تعيينه بنجاح...") app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 if name == "main": main()
 
