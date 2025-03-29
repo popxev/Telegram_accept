@@ -31,7 +31,9 @@ for link in banned_links:
 reply = custom_replies.get(text, "يمكنك استعمال /help لمعرفة أكثر")
 await update.message.reply_text(reply)
 
-app = Flask(name) application = Application.builder().token(TOKEN).build() application.initialize()  # إضافة التهيئة لحل مشكلة RuntimeError
+app = Flask(name)
+
+application = Application.builder().token(TOKEN).build() application.initialize()  # إضافة التهيئة لحل مشكلة RuntimeError
 
 @app.route("/webhook", methods=["POST"]) def webhook(): loop = asyncio.new_event_loop() asyncio.set_event_loop(loop) update = Update.de_json(request.get_json(), application.bot) loop.run_until_complete(application.process_update(update)) return "OK", 200
 
