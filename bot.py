@@ -1,4 +1,8 @@
-from telegram import Update from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext import re from flask import Flask, request import asyncio
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
+import re
+from flask import Flask, request
+import asyncio
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
 
