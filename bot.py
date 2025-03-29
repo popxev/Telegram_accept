@@ -1,13 +1,10 @@
-from flask import Flask, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 import re
-import os
+from flask import Flask, request
+import asyncio
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
-PORT = int(os.environ.get("PORT", 5000))
-
-app = Flask(__name__)
 
 banned_words = ["شرموط", "شرموطة", "قحبة", "زاملة", "زامل", "قحب", "نك", "نيك", "نيكمك", "نكمك", "زبي", "زب"]
 banned_links = ["www", "إعلان", "porn", "xxx", "x", ".com", "hetai"]
@@ -20,11 +17,12 @@ custom_replies = {
 
 async def start(update: Update, context: CallbackContext):
     message = f"""مرحبًا {update.effective_user.first_name}!
+
 🔗 قنواتنا الرسمية:
-1️⃣ يوتيوب: [Popxev Games](https://youtube.com/@popxevgames-v)
-2️⃣ إنستجرام: [Popxev Games](https://www.instagram.com/popxev_games)
-3️⃣ فيسبوك: [Popxev Games](https://www.facebook.com/share/1Dsxdcv7yN/)
-5️⃣ ديسكورد: [انضم إلينا](https://discord.gg/hK33DD74QN)
+1️⃣ يوتيوب: Popxev Games
+2️⃣ إنستجرام: Popxev Games
+3️⃣ فيسبوك: Popxev Games
+5️⃣ ديسكورد: انضم إلينا
     """
     await update.message.reply_text(message)
 
@@ -38,10 +36,10 @@ async def help_command(update: Update, context: CallbackContext):
 
 async def contact(update: Update, context: CallbackContext):
     contact_text = """💬 للتواصل معنا، يمكنك زيارة قنواتنا الرسمية:
-1️⃣ يوتيوب: [Popxev Games](https://youtube.com/@popxevgames-v)
-2️⃣ إنستجرام: [Popxev Games](https://www.instagram.com/popxev_games)
-3️⃣ فيسبوك: [Popxev Games](https://www.facebook.com/share/1Dsxdcv7yN/)
-5️⃣ ديسكورد: [انضم إلينا](https://discord.gg/hK33DD74QN)
+1️⃣ يوتيوب: Popxev Games
+2️⃣ إنستجرام: Popxev Games
+3️⃣ فيسبوك: Popxev Games
+5️⃣ ديسكورد: انضم إلينا
     """
     await update.message.reply_text(contact_text)
 
@@ -66,10 +64,16 @@ async def handle_messages(update: Update, context: CallbackContext):
     reply = custom_replies.get(text, "يمكنك استعمال /help لمعرفة أكثر")
     await update.message.reply_text(reply)
 
+app = Flask(__name__)
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    update = Update.de_json(request.get_json(), application.bot)
-    application.create_task(application.process_update(update))
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    update = Update.de_json(request.json, application.bot)
+    loop.run_until_complete(application.process_update(update))
+    
     return "OK", 200
 
 def main():
@@ -82,10 +86,8 @@ def main():
     application.add_handler(CommandHandler("discord", discord))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages))
 
-    application.bot.set_webhook(f"https://telegram-popxev-bot.onrender.com/webhook")
     print("✅ Webhook تم تعيينه بنجاح...")
-
-    app.run(host="0.0.0.0", port=PORT)
+    app.run(host="0.0.0.0", port=5000)
 
 if __name__ == "__main__":
     main()
