@@ -6,11 +6,11 @@ banned_words = ["شرموط", "شرموطة", "قحبة", "زاملة", "زام�
 
 custom_replies = { "مرحبا": "أهلًا وسهلًا بك! 😊", "كيف حالك؟": "أنا بخير، وأنت؟", "ما اسمك؟": "أنا بوت Popxev Games! 🤖" }
 
-async def start(update: Update, context: CallbackContext): message = f""" مرحبًا {update.effective_user.first_name}! 🔗 قنواتنا الرسمية: 1️⃣ يوتيوب: Popxev Games 2️⃣ إنستجرام: Popxev Games 3️⃣ فيسبوك: Popxev Games 5️⃣ ديسكورد: انضم إلينا """ await update.message.reply_text(message)
+async def start(update: Update, context: CallbackContext): message = f"""مرحبًا {update.effective_user.first_name}! 🔗 قنواتنا الرسمية: 1️⃣ يوتيوب: Popxev Games 2️⃣ إنستجرام: Popxev Games 3️⃣ فيسبوك: Popxev Games 5️⃣ ديسكورد: انضم إلينا""" await update.message.reply_text(message)
 
-async def help_command(update: Update, context: CallbackContext): help_text = """ 🔹 أوامر البوت: /start - بدء البوت /help - عرض الأوامر /contact - للتواصل معنا /discord - للانضمام إلى سيرفر ديسكورد """ await update.message.reply_text(help_text)
+async def help_command(update: Update, context: CallbackContext): help_text = """🔹 أوامر البوت: /start - بدء البوت /help - عرض الأوامر /contact - للتواصل معنا /discord - للانضمام إلى سيرفر ديسكورد""" await update.message.reply_text(help_text)
 
-async def contact(update: Update, context: CallbackContext): contact_text = """ 💬 للتواصل معنا، يمكنك زيارة قنواتنا الرسمية: 1️⃣ يوتيوب: Popxev Games 2️⃣ إنستجرام: Popxev Games 3️⃣ فيسبوك: Popxev Games 5️⃣ ديسكورد: انضم إلينا """ await update.message.reply_text(contact_text)
+async def contact(update: Update, context: CallbackContext): contact_text = """💬 للتواصل معنا، يمكنك زيارة قنواتنا الرسمية: 1️⃣ يوتيوب: Popxev Games 2️⃣ إنستجرام: Popxev Games 3️⃣ فيسبوك: Popxev Games 5️⃣ ديسكورد: انضم إلينا""" await update.message.reply_text(contact_text)
 
 async def discord(update: Update, context: CallbackContext): await update.message.reply_text("🎮 انضم إلى سيرفر ديسكورد: https://discord.gg/hK33DD74QN")
 
