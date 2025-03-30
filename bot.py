@@ -19,14 +19,11 @@ BANNED_WORDS = [
 BANNED_LINKS = ["xxx", "x", "xn", "porn", "www", "http", ".com", ".net", ".org", ".xyz"]
 
 app = Flask(__name__)
-application = Application.builder().token(TOKEN).build()
 
-@app.route(f'/{TOKEN}', methods=['POST'])
-def webhook():
-    json_str = request.get_data().decode("UTF-8")
-    update = Update.de_json(json.loads(json_str), bot)
-    asyncio.run(application.process_update(update))
-    return jsonify({"status": "ok"})
+async def create_application():
+    application = Application.builder().token(TOKEN).build()
+    await application.initialize()
+    return application
 
 async def set_webhook():
     webhook_url = f'https://telegram-accept.onrender.com/{TOKEN}'
@@ -55,11 +52,20 @@ async def handle_message(update: Update, context):
         return
     await update.message.reply_text("إذا كنت بحاجة إلى مساعدة، يمكنك استخدام الأمر /help.")
 
-application.add_handler(CommandHandler("start", start))
-application.add_handler(CommandHandler("help", help))
-application.add_handler(CommandHandler("contact", contact))
-application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+@app.route(f'/{TOKEN}', methods=['POST'])
+async def webhook():
+    json_str = request.get_data().decode("UTF-8")
+    update = Update.de_json(json.loads(json_str), bot)
+    asyncio.create_task(application.process_update(update))
+    return jsonify({"status": "ok"})
 
 if __name__ == "__main__":
+    application = asyncio.run(create_application())
+
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help))
+    application.add_handler(CommandHandler("contact", contact))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
     asyncio.run(set_webhook())
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
