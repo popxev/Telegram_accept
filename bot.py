@@ -4,7 +4,7 @@ TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA" WEBHOOK_URL = "https://
 
 app = Flask(name) logging.basicConfig(level=logging.INFO)
 
-banned_words = ["شرموط", "شرموطة", "قحبة", "زاملة", "زامل", "قحب", "نك", "نيك", "نيكمك", "نكمك", "زبي", "زب"] banned_links = ["www", "إعلان", "porn", "xxx", "x", ".com", "hetai"]
+banned_words = [ "شرموط", "شرموطة", "قحبة", "زاملة", "زامل", "قحب", "نك", "نيك", "نيكمك", "نكمك", "زبي", "زب" ] banned_links = ["www", "إعلان", "porn", "xxx", "x", ".com", "hetai"]
 
 custom_replies = { "مرحبا": "أهلًا وسهلًا بك!", "كيف حالك؟": "أنا بخير، وأنت؟", "ما اسمك؟": "أنا بوت Popxev Games!" }
 
