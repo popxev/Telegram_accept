@@ -39,7 +39,7 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_m
 
 @app.route(f"/{TOKEN}", methods=["POST"])
 async def webhook():
-    update = Update.de_json(await request.json(), bot)
+    update = Update.de_json(await request.get_json(), bot)
     await application.process_update(update)
     return "OK", 200
 
