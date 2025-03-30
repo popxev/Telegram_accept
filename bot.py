@@ -10,7 +10,7 @@ custom_replies = { "مرحبا": "أهلًا وسهلًا بك!", "كيف حال
 
 application = Application.builder().token(TOKEN).build()
 
-async def start(update: Update, context: CallbackContext): message = (f"مرحبًا {update.effective_user.first_name}!\n" "قنواتنا الرسمية:\n" "يوتيوب: https://youtube.com/@popxevgames-v1w?si=QulhnL1ZbhMU3mDK\n" "إنستجرام: https://www.instagram.com/popxev_games?igsh=anNwdzR5dXFwc2E4\n" "فيسبوك: https://www.facebook.com/share/1Dsxdcv7yN/\n" "ديسكورد: https://discord.gg/tuRy8Qf7") await update.message.reply_text(message)
+async def start(update: Update, context: CallbackContext): user_name = update.message.from_user.first_name if update.message else "مستخدم مجهول" message = (f"مرحبًا {user_name}!\n" "قنواتنا الرسمية:\n" "يوتيوب: https://youtube.com/@popxevgames-v1w?si=QulhnL1ZbhMU3mDK\n" "إنستجرام: https://www.instagram.com/popxev_games?igsh=anNwdzR5dXFwc2E4\n" "فيسبوك: https://www.facebook.com/share/1Dsxdcv7yN/\n" "ديسكورد: https://discord.gg/tuRy8Qf7") await update.message.reply_text(message)
 
 async def handle_messages(update: Update, context: CallbackContext): text = update.message.text.lower()
 
@@ -29,7 +29,7 @@ for link in banned_links:
 reply = custom_replies.get(text, "يمكنك استعمال /help لمعرفة أكثر")
 await update.message.reply_text(reply)
 
-@app.route("/webhook", methods=["POST"]) def webhook(): try: update = Update.de_json(request.get_json(), application.bot) asyncio.run(application.process_update(update)) return jsonify({"status": "ok"}), 200 except Exception as e: logging.error(f"خطأ في webhook: {str(e)}") return jsonify({"error": str(e)}), 500
+@app.route("/webhook", methods=["POST"]) def webhook(): try: update = Update.de_json(request.get_json(), application.bot) asyncio.run(application.update_queue.put(update)) return jsonify({"status": "ok"}), 200 except Exception as e: logging.error(f"خطأ في webhook: {str(e)}") return jsonify({"error": str(e)}), 500
 
 def main(): application.add_handler(CommandHandler("start", start)) application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages))
 
