@@ -62,9 +62,10 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_m
 async def set_webhook():
     await bot.set_webhook(url=WEBHOOK_URL)
 
-if __name__ == "__main__":
-    asyncio.run(set_webhook())
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 @app.route('/')
 def index():
     return "Bot is running!", 200
+
+if __name__ == "__main__":
+    asyncio.run(set_webhook())
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
