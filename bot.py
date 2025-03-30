@@ -27,9 +27,9 @@ def webhook():
     application.process_update(update)
     return 'ok'
 
-def set_webhook():
+async def set_webhook():
     webhook_url = f'https://telegram-accept.onrender.com/{TOKEN}'
-    bot.set_webhook(url=webhook_url)
+    await bot.set_webhook(url=webhook_url)
 
 async def start(update: Update, context):
     await update.message.reply_text("مرحبا! أنا بوت Popxev Games. إذا كنت بحاجة للمساعدة، استخدم /help.")
@@ -61,5 +61,6 @@ application.add_handler(CommandHandler("contact", contact))
 application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 if __name__ == "__main__":
-    set_webhook()
+    import asyncio
+    asyncio.run(set_webhook())
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
