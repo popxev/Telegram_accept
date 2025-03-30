@@ -2,9 +2,10 @@ import os
 import logging
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from flask import Flask, request
+from telegram.ext import Updater
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
-
 bot = Bot(token=TOKEN)
 
 BANNED_WORDS = [
@@ -16,7 +17,20 @@ BANNED_WORDS = [
 
 BANNED_LINKS = ["xxx", "x", "xn", "porn", "www", "http", ".com", ".net", ".org", ".xyz"]
 
+app = Flask(__name__)
+
 application = Application.builder().token(TOKEN).build()
+
+@app.route(f'/{TOKEN}', methods=['POST'])
+def webhook():
+    json_str = request.get_data().decode("UTF-8")
+    update = Update.de_json(json_str, bot)
+    application.process_update(update)
+    return 'ok'
+
+def set_webhook():
+    webhook_url = f'https://telegram-accept.onrender.com/{TOKEN}'
+    bot.set_webhook(url=webhook_url)
 
 async def start(update: Update, context):
     await update.message.reply_text("مرحبا! أنا بوت Popxev Games. إذا كنت بحاجة للمساعدة، استخدم /help.")
@@ -48,4 +62,5 @@ application.add_handler(CommandHandler("contact", contact))
 application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 if __name__ == "__main__":
-    application.run_polling()
+    set_webhook()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
