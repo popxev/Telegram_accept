@@ -8,9 +8,9 @@ banned_words = ["شرموط", "شرموطة", "قحبة", "زاملة", "زام�
 
 custom_replies = { "مرحبا": "أهلًا وسهلًا بك!", "كيف حالك؟": "أنا بخير، وأنت؟", "ما اسمك؟": "أنا بوت Popxev Games!" }
 
-application = Application.builder().token(TOKEN).build() application.initialize()
+application = Application.builder().token(TOKEN).build()
 
-async def start(update: Update, context: CallbackContext): message = f"""مرحبًا {update.effective_user.first_name}! قنواتنا الرسمية: يوتيوب: https://youtube.com/@popxevgames-v1w?si=QulhnL1ZbhMU3mDK إنستجرام: https://www.instagram.com/popxev_games?igsh=anNwdzR5dXFwc2E4 فيسبوك: https://www.facebook.com/share/1Dsxdcv7yN/ ديسكورد: https://discord.gg/tuRy8Qf7 """ await update.message.reply_text(message)
+async def start(update: Update, context: CallbackContext): message = (f"مرحبًا {update.effective_user.first_name}!\n" "قنواتنا الرسمية:\n" "يوتيوب: https://youtube.com/@popxevgames-v1w?si=QulhnL1ZbhMU3mDK\n" "إنستجرام: https://www.instagram.com/popxev_games?igsh=anNwdzR5dXFwc2E4\n" "فيسبوك: https://www.facebook.com/share/1Dsxdcv7yN/\n" "ديسكورد: https://discord.gg/tuRy8Qf7") await update.message.reply_text(message)
 
 async def handle_messages(update: Update, context: CallbackContext): text = update.message.text.lower()
 
@@ -31,7 +31,13 @@ await update.message.reply_text(reply)
 
 @app.route("/webhook", methods=["POST"]) def webhook(): try: update = Update.de_json(request.get_json(), application.bot) asyncio.run(application.process_update(update)) return jsonify({"status": "ok"}), 200 except Exception as e: logging.error(f"خطأ في webhook: {str(e)}") return jsonify({"error": str(e)}), 500
 
-def main(): application.add_handler(CommandHandler("start", start)) application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages)) print("✅ Webhook تم تعيينه بنجاح...") app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+def main(): application.add_handler(CommandHandler("start", start)) application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_messages))
+
+application.run_webhook(
+    listen="0.0.0.0",
+    port=int(os.environ.get("PORT", 5000)),
+    webhook_url=WEBHOOK_URL
+)
 
 if name == "main": main()
 
