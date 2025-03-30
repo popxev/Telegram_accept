@@ -8,7 +8,7 @@ app = Flask(name) application = Application.builder().token(TOKEN).build()
 
 @app.route('/') def home(): return "Bot is running!"
 
-@app.route(f'/{TOKEN}', methods=['POST']) def webhook(): json_str = request.get_data().decode("UTF-8") json_dict = json.loads(json_str)  # تحويل النص إلى JSON update = Update.de_json(json_dict, bot)  # تمرير القاموس بدلاً من النص asyncio.run(application.process_update(update)) return 'ok'
+@app.route(f'/{TOKEN}', methods=['POST']) def webhook(): json_str = request.get_data().decode("UTF-8") data = json.loads(json_str)  # تحويل النص إلى JSON update = Update.de_json(data, bot) asyncio.run(application.process_update(update)) return 'ok'
 
 async def set_webhook(): webhook_url = f'https://telegram-accept.onrender.com/{TOKEN}' await bot.set_webhook(url=webhook_url)
 
