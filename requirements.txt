@@ -1,2 +1,3 @@
-python-telegram-bot
+quart
 flask
+python-telegram-bot
