@@ -18,7 +18,6 @@ BANNED_WORDS = [
 BANNED_LINKS = ["xxx", "x", "xn", "porn", "www", "http", ".com", ".net", ".org", ".xyz"]
 
 app = Flask(__name__)
-
 application = Application.builder().token(TOKEN).build()
 
 @app.route(f'/{TOKEN}', methods=['POST'])
@@ -41,7 +40,6 @@ async def help(update: Update, context):
 async def contact(update: Update, context):
     await update.message.reply_text(
         "للتواصل معنا: \n\n"
-        "حساباتنا على الشبكات الاجتماعية: \n"
         "فيسبوك: [Popxev Games](https://www.facebook.com/share/1Dsxdcv7yN/) \n"
         "إنستجرام: [Popxev Games](https://www.instagram.com/popxev_games?igsh=anNwdzR5dXFwc2E4) \n"
         "تيليجرام: [بوت Popxev](https://t.me/Popxevgamesgroup) \n"
