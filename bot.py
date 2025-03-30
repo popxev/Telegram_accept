@@ -1,14 +1,14 @@
 import os import logging from flask import Flask, request from telegram import Bot, Update from telegram.ext import Dispatcher, CommandHandler, MessageHandler, Filters, CallbackContext import threading
 
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") WEBHOOK_URL = "https://telegram-popxev-bot.onrender.com"
+TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA" WEBHOOK_URL = "https://telegram-popxev-bot.onrender.com"
 
 app = Flask(name) bot = Bot(token=TOKEN) dispatcher = Dispatcher(bot, None, workers=4)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def start(update: Update, context: CallbackContext): update.message.reply_text("مرحبًا! أنا بوتك.")
+def start(update: Update, context: CallbackContext): update.message.reply_text("مرحبًا! أنا بوتك على تيليجرام.")
 
-def handle_message(update: Update, context: CallbackContext): update.message.reply_text(f"لقد أرسلت: {update.message.text}")
+def handle_message(update: Update, context: CallbackContext): update.message.reply_text(f"لقد قلت: {update.message.text}")
 
 dispatcher.add_handler(CommandHandler("start", start)) dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
 
