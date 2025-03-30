@@ -1,20 +1,50 @@
-import os import logging from flask import Flask, request from telegram import Bot, Update from telegram.ext import Dispatcher, CommandHandler, MessageHandler, Filters, CallbackContext import threading
+import os
+import logging
+import asyncio
+from flask import Flask, request
+from telegram import Bot, Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 
-TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA" WEBHOOK_URL = "https://telegram-popxev-bot.onrender.com"
+TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
+WEBHOOK_URL = "https://telegram-popxev-bot.onrender.com"
 
-app = Flask(name) bot = Bot(token=TOKEN) dispatcher = Dispatcher(bot, None, workers=4)
+app = Flask(__name__)
+bot = Bot(token=TOKEN)
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+BANNED_WORDS = [
+    "كس", "كسمك", "كسك", "بوسة", "نيك", "نك", "حواك", "حوي", "نحويك", "نيكك", "زك", "زكك",
+    "قحب", "قحبة", "شرذيذ", "مضاجعة", "جماع", "ممارسة", "اغتصاب", "عاهرة", "دعارة", "مؤخرة",
+    "صدر", "ثدي", "فرج", "استمناء", "احتلام", "لواط", "سحاق", "شاذ", "شاذة", "زنا", "إباحية",
+    "سكسي", "sexy", "sex", "porn", "pussy", "dick", "ass", "boobs", "cock", "bitch", "slut"
+]
 
-def start(update: Update, context: CallbackContext): update.message.reply_text("مرحبًا! أنا بوتك على تيليجرام.")
+BANNED_LINKS = ["xxx", "x", "xn", "porn", "www", "http", ".com", ".net", ".org", ".xyz"]
 
-def handle_message(update: Update, context: CallbackContext): update.message.reply_text(f"لقد قلت: {update.message.text}")
+application = Application.builder().token(TOKEN).build()
 
-dispatcher.add_handler(CommandHandler("start", start)) dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+async def start(update: Update, context):
+    await update.message.reply_text("مرحبا! أنا بوت Popxev Games.")
 
-@app.route(f"/{TOKEN}", methods=["POST"]) def webhook(): update = Update.de_json(request.get_json(), bot) dispatcher.process_update(update) return "OK", 200
+async def handle_message(update: Update, context):
+    text = update.message.text.lower()
+    if any(word in text for word in BANNED_WORDS) or any(link in text for link in BANNED_LINKS):
+        await update.message.delete()
+        return
+    await update.message.reply_text("تم استلام رسالتك!")
 
-def set_webhook(): bot.set_webhook(f"{WEBHOOK_URL}/{TOKEN}")
+application.add_handler(CommandHandler("start", start))
+application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-if name == "main": set_webhook() app.run(host="0.0.0.0", port=5000)
+@app.route(f"/{TOKEN}", methods=["POST"])
+async def webhook():
+    update = Update.de_json(request.get_json(force=True), bot)
+    await application.process_update(update)
+    return "OK", 200
 
+async def set_webhook():
+    await bot.set_webhook(f"{WEBHOOK_URL}/{TOKEN}")
+
+if __name__ == "__main__":
+    # استخدام asyncio.run بدلاً من await هنا
+    asyncio.run(set_webhook())
+    app.run(host="0.0.0.0", port=5000)
