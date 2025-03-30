@@ -65,3 +65,6 @@ async def set_webhook():
 if __name__ == "__main__":
     asyncio.run(set_webhook())
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+@app.route('/')
+def index():
+    return "Bot is running!", 200
