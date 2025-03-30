@@ -39,7 +39,7 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_m
 
 @app.route(f"/{TOKEN}", methods=["POST"])
 async def webhook():
-    update = Update.de_json(await request.json(), bot)
+    update = Update.de_json(await request.get_json(), bot)
     await application.process_update(update)
     return "OK", 200
 
@@ -51,4 +51,3 @@ if __name__ == "__main__":
     config = Config()
     config.bind = ["0.0.0.0:5000"]
     asyncio.run(hypercorn.asyncio.serve(app, config))
-
