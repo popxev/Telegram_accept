@@ -1,9 +1,9 @@
 import os
 import logging
+import asyncio
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from flask import Flask, request
-import asyncio
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
 bot = Bot(token=TOKEN)
@@ -25,7 +25,7 @@ application = Application.builder().token(TOKEN).build()
 def webhook():
     json_str = request.get_data().decode("UTF-8")
     update = Update.de_json(json_str, bot)
-    application.process_update(update)
+    asyncio.run(application.process_update(update))
     return 'ok'
 
 async def set_webhook():
