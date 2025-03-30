@@ -1,16 +1,10 @@
 import os
 import logging
-import asyncio
-from quart import Quart, request
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
-import hypercorn.asyncio
-from hypercorn.config import Config
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
-WEBHOOK_URL = "https://telegram-popxev-bot.onrender.com"
 
-app = Quart(__name__)
 bot = Bot(token=TOKEN)
 
 BANNED_WORDS = [
@@ -25,29 +19,33 @@ BANNED_LINKS = ["xxx", "x", "xn", "porn", "www", "http", ".com", ".net", ".org",
 application = Application.builder().token(TOKEN).build()
 
 async def start(update: Update, context):
-    await update.message.reply_text("مرحبا! أنا بوت Popxev Games.")
+    await update.message.reply_text("مرحبا! أنا بوت Popxev Games. إذا كنت بحاجة للمساعدة، استخدم /help.")
+
+async def help(update: Update, context):
+    await update.message.reply_text("كيفية استخدام البوت: \n- لا تستخدم كلمات أو روابط ممنوعة. \n- إذا كنت بحاجة للتواصل، استخدم /contact.")
+
+async def contact(update: Update, context):
+    await update.message.reply_text(
+        "للتواصل معنا: \n\n"
+        "حساباتنا على الشبكات الاجتماعية: \n"
+        "فيسبوك: [Popxev Games](https://www.facebook.com/share/1Dsxdcv7yN/) \n"
+        "إنستجرام: [Popxev Games](https://www.instagram.com/popxev_games?igsh=anNwdzR5dXFwc2E4) \n"
+        "تيليجرام: [بوت Popxev](https://t.me/Popxevgamesgroup) \n"
+        "جروب تيليجرام: [Popxev Games Group](https://t.me/Popxevgamesgroup) \n"
+        "ديسكورد: [Popxev Games Discord](https://discord.gg/tuRy8Qf7) \n"
+    )
 
 async def handle_message(update: Update, context):
     text = update.message.text.lower()
     if any(word in text for word in BANNED_WORDS) or any(link in text for link in BANNED_LINKS):
         await update.message.delete()
         return
-    await update.message.reply_text("تم استلام رسالتك!")
+    await update.message.reply_text("إذا كنت بحاجة إلى مساعدة، يمكنك استخدام الأمر /help.")
 
 application.add_handler(CommandHandler("start", start))
+application.add_handler(CommandHandler("help", help))
+application.add_handler(CommandHandler("contact", contact))
 application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-@app.route(f"/{TOKEN}", methods=["POST"])
-async def webhook():
-    update = Update.de_json(await request.get_json(), bot)
-    await application.process_update(update)
-    return "OK", 200
-
-async def set_webhook():
-    await bot.set_webhook(f"{WEBHOOK_URL}/{TOKEN}")
-
 if __name__ == "__main__":
-    asyncio.run(set_webhook())
-    config = Config()
-    config.bind = ["0.0.0.0:5000"]
-    asyncio.run(hypercorn.asyncio.serve(app, config))
+    application.run_polling()
