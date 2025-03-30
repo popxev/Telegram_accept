@@ -7,8 +7,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from flask import Flask, request, jsonify
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
-WEBHOOK_URL = f'https://your-app-name.onrender.com/{TOKEN}'
-
+WEBHOOK_URL = "https://telegram-accept.onrender.com/7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
 bot = Bot(token=TOKEN)
 app = Flask(__name__)
 application = Application.builder().token(TOKEN).build()
