@@ -3,7 +3,6 @@ import logging
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from flask import Flask, request
-from telegram.ext import Updater
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
 bot = Bot(token=TOKEN)
