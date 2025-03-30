@@ -4,6 +4,8 @@ import asyncio
 from quart import Quart, request
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
+import hypercorn.asyncio
+from hypercorn.config import Config
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
 WEBHOOK_URL = "https://telegram-popxev-bot.onrender.com"
@@ -46,4 +48,7 @@ async def set_webhook():
 
 if __name__ == "__main__":
     asyncio.run(set_webhook())
-    app.run(host="0.0.0.0", port=5000)
+    config = Config()
+    config.bind = ["0.0.0.0:5000"]
+    asyncio.run(hypercorn.asyncio.serve(app, config))
+
