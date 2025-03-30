@@ -3,6 +3,7 @@ import logging
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from flask import Flask, request
+import asyncio
 
 TOKEN = "7975587876:AAEPJnx7pt-qeqM41ijxg6dRU_wfzgEx1aA"
 bot = Bot(token=TOKEN)
@@ -61,6 +62,5 @@ application.add_handler(CommandHandler("contact", contact))
 application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(set_webhook())
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
